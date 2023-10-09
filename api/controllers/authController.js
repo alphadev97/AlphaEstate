@@ -1,6 +1,7 @@
 import User from "../models/userModel.js";
 import bcryptjs from "bcryptjs";
 import { errorHandler } from "../utils/error.js";
+import jwt from "jsonwebtoken";
 
 export const signup = async (req, res, next) => {
   const { username, email, password } = req.body;
@@ -25,6 +26,13 @@ export const signin = async (req, res, next) => {
     const validPassword = bcryptjs.compareSync(password, validUser.password);
 
     if (!validPassword) return next(errorHandler(401, "Wrong credentials!"));
+
+    const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET);
+
+    res
+      .cookie("access_token", token, { httpOnly: true })
+      .status(200)
+      .json(validUser);
   } catch (error) {
     next(error);
   }
