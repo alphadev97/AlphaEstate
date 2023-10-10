@@ -1,13 +1,20 @@
 import { useSelector } from "react-redux";
 import { useRef, useState, useEffect } from "react";
-import { getStorage, ref, uploadBytesResumable } from "firebase/storage";
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
 import { app } from "../firebase";
 
 const Profile = () => {
   const fileRef = useRef(null);
   const { currentUser } = useSelector((state) => state.user);
   const [file, setFile] = useState(undefined);
-  console.log(file);
+  const [filePerc, setFilePerc] = useState(0);
+  const [fileUploadError, setFileUploadError] = useState(false);
+  const [formData, setFormData] = useState({});
 
   useEffect(() => {
     if (file) {
@@ -21,10 +28,24 @@ const Profile = () => {
     const storageRef = ref(storage, fileName);
     const uploadTask = uploadBytesResumable(storageRef, file);
 
-    uploadTask.on("state_changed", (snapshopt) => {
-      const progess = (snapshopt.bytesTransferred / snapshopt.totalBytes) * 100;
-      console.log("Upload is" + progess + "% done");
-    });
+    uploadTask.on(
+      "state_changed",
+      (snapshopt) => {
+        const progess =
+          (snapshopt.bytesTransferred / snapshopt.totalBytes) * 100;
+        setFilePerc(Math.round(progess));
+      },
+
+      (error) => {
+        setFileUploadError(true);
+      },
+
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          setFormData({ ...formData, avatar: downloadURL });
+        });
+      }
+    );
   };
 
   return (
@@ -41,9 +62,22 @@ const Profile = () => {
         <img
           onClick={() => fileRef.current.click()}
           className="rounded-full h-24 w-24 object-cover cursor-pointer self-center mt-2"
-          src={currentUser.avatar}
+          src={formData.avatar || currentUser.avatar}
           alt="profile"
         />
+        <p className="text-sm self-center">
+          {fileUploadError ? (
+            <span className="text-red-700">
+              Error Image Upload (image must be less than 2 mb)
+            </span>
+          ) : filePerc > 0 && filePerc < 100 ? (
+            <span className="text-blue-700">{`Uploading ${filePerc}%`}</span>
+          ) : filePerc === 100 ? (
+            <span className="text-green-700">Image Successfully Uploaded!</span>
+          ) : (
+            ""
+          )}
+        </p>
         <input
           id="username"
           type="text"
