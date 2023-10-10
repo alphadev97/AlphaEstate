@@ -4,8 +4,6 @@ import { useSelector } from "react-redux";
 
 const Header = () => {
   const { currentUser } = useSelector((state) => state.user);
-  console.log(currentUser.avatar);
-  console.log(currentUser.email);
 
   return (
     <header className="bg-blue-100 shadow-md">
