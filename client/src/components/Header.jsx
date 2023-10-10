@@ -4,6 +4,8 @@ import { useSelector } from "react-redux";
 
 const Header = () => {
   const { currentUser } = useSelector((state) => state.user);
+  console.log(currentUser.avatar);
+  console.log(currentUser.email);
 
   return (
     <header className="bg-blue-100 shadow-md">
@@ -38,7 +40,7 @@ const Header = () => {
             {currentUser ? (
               <img
                 className="rounded-full h-7 w-7 object-cover"
-                src="https://lh3.googleusercontent.com/a/ACg8ocIjuvs-5Kd8QWjAYQ-8Qdjot_1gle-7G7DDnQsoTKGTwPk=s96-c"
+                src={currentUser.avatar}
                 alt="profile"
               />
             ) : (
