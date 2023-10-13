@@ -108,7 +108,7 @@ const Listing = () => {
               <span className="font-semibold text-black">Description</span> -{" "}
               {listing.description}
             </p>
-            <ul className="text-green-900 font-semibold text-sm flex items-center gap-4 sm:gap-6">
+            <ul className="text-green-900 font-semibold text-sm flex flex-wrap items-center gap-4 sm:gap-6">
               <li className="flex items-center gap-1 whitespace-nowrap ">
                 <FaBed className="text-lg" />
                 {listing.bedrooms > 1
@@ -130,6 +130,9 @@ const Listing = () => {
                 {listing.furnished ? "Furnished" : "Unfurnished"}
               </li>
             </ul>
+            <button className="bg-blue-700 text-white rounded-lg uppercase hover:opacity-95 p-3">
+              Contact Landlord
+            </button>
           </div>
         </div>
       )}
