@@ -12,6 +12,7 @@ import {
   FaParking,
   FaChair,
 } from "react-icons/fa";
+import { useSelector } from "react-redux";
 
 const Listing = () => {
   SwiperCore.use([Navigation]);
@@ -20,6 +21,7 @@ const Listing = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [copied, setCopied] = useState(false);
+  const { currentUser } = useSelector((state) => state.user);
 
   useEffect(() => {
     const fetchListing = async () => {
@@ -130,9 +132,11 @@ const Listing = () => {
                 {listing.furnished ? "Furnished" : "Unfurnished"}
               </li>
             </ul>
-            <button className="bg-blue-700 text-white rounded-lg uppercase hover:opacity-95 p-3">
-              Contact Landlord
-            </button>
+            {currentUser && listing.userRef !== currentUser._id && (
+              <button className="bg-blue-700 text-white rounded-lg uppercase hover:opacity-95 p-3">
+                Contact Landlord
+              </button>
+            )}
           </div>
         </div>
       )}
